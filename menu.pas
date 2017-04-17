@@ -97,5 +97,5 @@ type
 
 {program utama}
 begin
-	menu;
+	menu;{test} 
 end.
