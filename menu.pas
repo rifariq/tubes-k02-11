@@ -166,7 +166,7 @@ begin
 					readln(namaFile);
 					assign(fn,namaFile);
 					reset(fn);
-					ln.neff := 0;
+					ln.neff := 1;
 					while (not eof(fn)) and (i>=201) do
 					begin
 						read(fn,n);
