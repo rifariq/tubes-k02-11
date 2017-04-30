@@ -119,6 +119,7 @@ var
 	lPembayaran : listPembayaran;
 	lPembelian : listPembelian;
 	lNilaiTukar : listNilaiTukar;
+	noNasabah : string;
 	
 procedure load(var ln : listNasabah; lr : listRekening; ls : listSetoran; lt : listTransfer; lbyr : listPembayaran; lbeli : listPembelian; lnt : listNilaiTukar);
 var
