@@ -389,84 +389,15 @@ begin
 	close(fnt);
 end;
 
-procedure tulisMenu;
-begin
-	writeln('> menu:');
-	writeln;
-	writeln('> 1. load ');
-	writeln('> 2. login');
-	writeln('> 3. lihatRekening ');
-	writeln('> 4. informasiSldo ');
-	writeln('> 5. lihatAktivitasTransaksi ');
-	writeln('> 6. pembuatanRekening ');
-	writeln('> 7. setoran ');
-	writeln('> 8. penarikan ');
-	writeln('> 9. transfer ');
-	writeln('> 10. pembayaran ');
-	writeln('> 11. pembelian ');
-	writeln('> 12. penutupanRekening ');
-	writeln('> 13. perubahanDataRekening ');
-	writeln('> 14. penambahanAutoDebet ');
-	writeln('> 15. exit ');
-end;
 
 procedure menu;
 var
 	loop : boolean;
 	a : integer;
 begin
-	tulisMenu;
-	write('masukkan angka sesual dengan perintahnya');
-	readln(a);
-	case a of
-		1 :
-			begin
-				load(lNasabah, lRekening, lSetoran, lTransfer, lPembayaran, lPembelian, lNilaiTukar);
-			end;
-		2 :
-			begin
-			end;
-		3 :
-			begin
-			end;
-		4 :
-			begin
-			end;
-		5 :
-			begin
-			end;
-		6 :
-			begin
-			end;
-		7 :
-			begin
-			end;
-		8 :
-			begin
-			end;
-		9 :
-			begin
-			end;
-		10 :
-			begin
-			end;
-		11 :
-			begin
-			end;
-		12 :
-			begin
-			end;
-		13 :
-			begin
-			end;
-		14 :
-			begin
-			end;
-		15 :
-			begin
-				exitProgram(lNasabah, lRekening, lSetoran, lTransfer, lPembayaran, lPembelian, lNilaiTukar);
-			end;
-	end;
+	writeln('tekan enter untuk memulai')
+	readln;
+	clrscr;
 end;
 {program utama}
 begin
