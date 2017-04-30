@@ -298,6 +298,43 @@ begin
 	end;
 end;
 
+procedure penambahanAutoDebet(noNasabah : string; var  lr : listRekening);
+var
+	found : boolean;
+	nomandiri, noauto,lra, lrm : string;
+begin
+	found1 := false;
+	found2 := false;
+	writeln('> tuliskan nomor rekening yang mau diberi/diubah autodebetnya : ');
+	redln(noauto);
+	write('> tuliskan rekening mandiri yang mau dijadikan autodebet : ');
+	readln(nomandiri);
+	i := 1;
+	while (not found1) and (not found2) and (i<=lr.neff) do
+	begin
+		lna:= lr.rekening[i].nomorAkun;
+		jenis:= lr.rekening[i].jenisRekening;
+		if (lna=noauto) and ((jenis = 'tabungan rencana') or (jenis = 'deposito')) then
+		begin
+			found1 := true;
+			b:=i;
+		end;
+		if (lna=nomandiri) and (jenis = 'tabungan mandiri') then
+		begin
+			found2 := true;
+		end;
+		i := i+1;
+	end;
+	if found1 and found2 then
+	begin
+		lr.rekening[b].rekeningAutodebet := nomandiri;
+	end
+	else
+	begin
+		writeln('> perintah tidak bisa dilakukan karena nomor rekening tidak ada');
+	end;
+end;
+
 procedure exitProgram (ln : listNasabah; lr : listRekening; ls : listSetoran;lt : listTransfer;lbyr : listPembayaran;lbeli : listPembelian;lnt : listNilaiTukar);
 var
 	fn : file of nasabah;
@@ -396,13 +433,9 @@ var
 	loop : boolean;
 	a : integer;
 begin
-	writeln('tekan enter untuk memulai')
-	readln;
-	clrscr;
+	writeln('> program perbankan');
 end;
 {program utama}
 begin
 	menu; 
 end.
-
-i like women bruuuuuh
