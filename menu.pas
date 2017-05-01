@@ -121,6 +121,110 @@ var
 	lNilaiTukar : listNilaiTukar;
 	noNasabah : string;
 	urutanNasabah : integer;
+
+function jatuhtempo(R : Rekening):Boolean;
+{Mencari tahu apakah akun sudah jatuh tempo atau belum}
+
+begin
+	jatuhtempo := false;
+		if (R.jangkaWaktu = '1 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>30) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '3 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>90) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '6 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>180) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '12 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>365) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '1 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>365) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '2 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>730) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '3 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>1095) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '4 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>1460) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '5 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>1875) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '6 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>2190) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '7 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>2555) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '8 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>2920) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '9 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>3285) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '10 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>3650) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '11 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>4015) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '12 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>4380) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '13 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>4745) then jatuhtempo:=True;
+			end else			
+		if (R.jangkaWaktu = '14 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>5110) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '15 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>5475) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '16 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>5840) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '17 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>6205) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '18 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>6570) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '19 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>6935) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '20 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>7300) then jatuhtempo:=True;
+			end else		
+end;
+
 	
 procedure load(var ln : listNasabah; lr : listRekening; ls : listSetoran; lt : listTransfer; lbyr : listPembayaran; lbeli : listPembelian; lnt : listNilaiTukar);
 var
