@@ -52,7 +52,7 @@ type
 		jenisrekening : string;
 		mataUang : string;
 		saldo : longint;
-		setoranRutin : string;
+		setoranRutin : longint;
 		rekeningAutodebet : string;
 		jangkaWaktu : string; 
 		tanggalMulai : string; 
@@ -121,6 +121,110 @@ var
 	lNilaiTukar : listNilaiTukar;
 	noNasabah : string;
 	urutanNasabah : integer;
+
+function jatuhtempo(R : Rekening):Boolean;
+{Mencari tahu apakah akun sudah jatuh tempo atau belum}
+
+begin
+	jatuhtempo := false;
+		if (R.jangkaWaktu = '1 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>30) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '3 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>90) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '6 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>180) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '12 bulan') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>365) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '1 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>365) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '2 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>730) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '3 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>1095) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '4 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>1460) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '5 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>1875) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '6 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>2190) then jatuhtempo:=True;
+			end else
+		if (R.jangkaWaktu = '7 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>2555) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '8 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>2920) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '9 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>3285) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '10 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>3650) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '11 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>4015) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '12 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>4380) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '13 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>4745) then jatuhtempo:=True;
+			end else			
+		if (R.jangkaWaktu = '14 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>5110) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '15 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>5475) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '16 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>5840) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '17 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>6205) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '18 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>6570) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '19 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>6935) then jatuhtempo:=True;
+			end else		
+		if (R.jangkaWaktu = '20 tahun') then
+			begin
+				if (Date-StrToDate(R.tanggalMulai)>7300) then jatuhtempo:=True;
+			end else		
+end;
+
 	
 procedure load(var ln : listNasabah; lr : listRekening; ls : listSetoran; lt : listTransfer; lbyr : listPembayaran; lbeli : listPembelian; lnt : listNilaiTukar);
 var
@@ -155,7 +259,7 @@ begin
 		writeln('> 6. Pembelian');
 		writeln('> 7. Nilai tukar');
 		writeln('> 8. Exit load');
-		write('> masukkan angka untuk menge-load file sesuai jenis:');
+		write('> masukkan angka untuk menge-load file sesuai jenis: ');
 		readln(a);
 		case a of
 			1 :
@@ -431,6 +535,180 @@ begin
 	close(fnt);
 end;
 
+procedure buatRekening(NoNasabah : string; var R : ListRekening);
+
+{Kamus lokal}
+var	
+	chs,n,jw	: integer;
+	saldo,setoran	: longint;
+	rekAuto		: string;
+	i		: integer;
+{Algoritma Prosedur}
+begin
+writeln('> Buat Rekening');
+repeat 
+	writeln('> Pilih jenis rekening yang akan dibuat :');
+	writeln('> 1. Tabungan Mandiri');
+	writeln('> 2. Tabungan Rencana');
+	writeln('> 3. Deposito');
+	write('> Jenis rekening: ');
+	readln(chs);
+	writeln('>');
+until (chs>0)and(chs<4);
+case chs of
+	1 : begin
+		repeat
+			writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal Rp 50.000');
+			write('> Masukkan setoran awal : Rp ');
+			readln(saldo);
+		until (saldo>=50000);	
+		n := R.Neff+1;
+		R.rekening[n].nomorAkun := '1XY0'+IntToStr(n);
+		R.rekening[n].nomorNasabah := NoNasabah;
+		R.rekening[n].jenisrekening := 'tabungan mandiri';
+		R.rekening[n].mataUang := 'IDR';
+		R.rekening[n].saldo := saldo;
+		R.rekening[n].setoranrutin := 0;
+		R.rekening[n].rekeningAutodebet := '-';
+		R.rekening[n].jangkaWaktu := '-';
+		R.rekening[n].tanggalMulai := DateToStr(Date);
+		end;	
+	2 : begin
+		n := R.Neff+1;
+		write('> Masukkan setoran awal : Rp ');
+		readln(saldo);
+		if (saldo<0) then 
+		begin
+			repeat
+				writeln('> Masukkan angka  >= 0');
+				write('> Masukkan setoran awal : Rp ');
+				readln(saldo);
+			until (saldo>=0);
+		end;
+		writeln('> Silahkan tentukan setoran bulanan yang Anda inginkan');
+		repeat
+			writeln('> Minimal Rp 500.000');
+			write('> Masukkan jumlah setoran bulanan : Rp ');
+			readln(setoran);
+		until (setoran>=500000);
+		i := 1;
+		rekAuto := '-';
+		while (i<n) and (rekAuto = '-') do
+		begin
+			if (R.rekening[i].nomorNasabah=R.rekening[n].nomorNasabah) and (R.rekening[i].jenisrekening = 'tabungan mandiri') then
+			begin
+				rekAuto := R.rekening[i].nomorAkun
+			end;
+			i:=i+1;
+		end;
+	
+		writeln('> Silahkan tentukan jangka waktu tabungan yang Anda inginkan');
+		repeat
+			writeln('> Minimal 1 tahun');
+			writeln('> Maksimal 20 tahun');
+			write('> Jangka waktu tabungan dalam tahun: ');
+			readln(jw);
+		until (jw>=1)and(jw<=20);
+				
+		R.rekening[n].nomorAkun := '2XY0'+IntToStr(n);
+		R.rekening[n].nomorNasabah := NoNasabah;
+		R.rekening[n].jenisrekening := 'tabungan rencana';
+		R.rekening[n].mataUang := 'IDR';
+		R.rekening[n].saldo := saldo;
+		R.rekening[n].setoranrutin := setoran;
+		R.rekening[n].rekeningAutodebet := rekAuto;
+		R.rekening[n].jangkaWaktu := IntToStr(jw)+' tahun';
+		R.rekening[n].tanggalMulai := DateToStr(Date);
+		end;
+	3 : begin
+		n :=R.Neff+1;
+		writeln('> Kami menyediakan tiga jenis mata uang yang dapat anda gunakan :');
+		writeln('> 1. IDR');
+		writeln('> 2. USD');
+		writeln('> 3. EUR');
+		write('> Pilih mata uang yang ingin anda gunakan : ');
+		readln(chs);
+		while (chs<1)or(chs>3) do 
+		begin
+			writeln('> Masukkan angka 1-3');
+			write('> Pilih mata uang yang ingin anda gunakan : ');
+			readln(chs);
+		end;
+		case chs of
+		1 : begin
+			R.rekening[n].mataUang := 'IDR';
+			repeat
+				writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal Rp 8.000.000');
+				write('> Masukkan setoran awal : Rp ');
+				readln(saldo);
+			until (saldo>=8000000);
+			end;
+		2 : begin
+			R.rekening[n].mataUang := 'USD';
+			repeat
+				writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal USD 600');
+				write('> Masukkan setoran awal : USD ');
+				readln(saldo);
+			until (saldo>=600);	
+			end;	
+		3 : begin
+			R.rekening[n].mataUang := 'EUR';
+			repeat
+				writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal EUR 550');
+				write('> Masukkan setoran awal : EUR ');
+				readln(saldo);
+			until (saldo>=550);	
+			end;
+		end;	
+		i := 1;
+		rekAuto := '-';
+		while (i<n) and (rekAuto = '-') do
+		begin
+			if (R.rekening[i].nomorNasabah=R.rekening[n].nomorNasabah) and (R.rekening[i].jenisrekening = 'tabungan mandiri') then
+			begin
+				rekAuto := R.rekening[i].nomorAkun
+			end;
+			i:=i+1;
+		end;
+		
+		writeln('> Silahkan pilih jangka waktu tabungan yang Anda inginkan');
+		writeln('> 1. 1 bulan');
+		writeln('> 2. 3 bulan');
+		writeln('> 3. 6 bulan');
+		writeln('> 4. 12 bulan');
+		write('> Pilihan : ');
+		readln(chs);
+		while (chs<1)or(chs>4) do 
+		begin
+			writeln('> Masukkan angka 1-4');
+			write('> Pilihan : ');
+			readln(chs);
+		end;
+		case chs of
+		1 : begin
+			jw := 1;
+			end;
+		2 : begin
+			jw := 3;
+			end;
+		3 : begin
+			jw := 6;
+			end;
+		4 : begin
+			jw := 12;
+			end;
+		end;				
+		R.rekening[n].nomorAkun := '3XY0'+IntToStr(n);
+		R.rekening[n].nomorNasabah := NoNasabah;
+		R.rekening[n].jenisrekening := 'deposito';
+		R.rekening[n].saldo := saldo;
+		R.rekening[n].setoranrutin := 0;
+		R.rekening[n].rekeningAutodebet := rekAuto;
+		R.rekening[n].jangkaWaktu := IntToStr(jw)+' bulan';
+		R.rekening[n].tanggalMulai := DateToStr(Date);
+		end;
+	end;
+end;
 
 procedure menu;
 var
