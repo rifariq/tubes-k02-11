@@ -298,15 +298,19 @@ begin
 	end;
 end;
 
+
+
 procedure penambahanAutoDebet(noNasabah : string; var  lr : listRekening);
 var
-	found : boolean;
-	nomandiri, noauto,lra, lrm : string;
+	found1, found2 : boolean;
+	nomandiri, noauto,lna, jenis : string;
+	i,b : integer;
+	
 begin
 	found1 := false;
 	found2 := false;
 	writeln('> tuliskan nomor rekening yang mau diberi/diubah autodebetnya : ');
-	redln(noauto);
+	readln(noauto);
 	write('> tuliskan rekening mandiri yang mau dijadikan autodebet : ');
 	readln(nomandiri);
 	i := 1;
@@ -344,7 +348,6 @@ var
 	fbyr : file of pembayaran;
 	fbeli : file of pembelian;
 	fnt : file of nilaiTukar;
-	namaFile : string;
 	n : nasabah;
 	r :rekening;
 	s : setoran;
@@ -434,6 +437,9 @@ var
 	a : integer;
 begin
 	writeln('> program perbankan');
+	load(lNasabah,lRekening,lSetoran,lTransfer,lPembayaran,lPembelian,lNilaiTukar);
+	
+	
 end;
 {program utama}
 begin
