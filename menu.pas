@@ -120,6 +120,7 @@ var
 	lPembelian : listPembelian;
 	lNilaiTukar : listNilaiTukar;
 	noNasabah : string;
+	urutanNasabah : integer;
 	
 procedure load(var ln : listNasabah; lr : listRekening; ls : listSetoran; lt : listTransfer; lbyr : listPembayaran; lbeli : listPembelian; lnt : listNilaiTukar);
 var
@@ -166,7 +167,7 @@ begin
 					readln(namaFile);
 					assign(fn,namaFile);
 					reset(fn);
-					ln.neff := 1;
+					ln.neff := 0;
 					while (not eof(fn)) and (i>=201) do
 					begin
 						read(fn,n);
@@ -178,7 +179,7 @@ begin
 				end;
 			2 :
 				begin
-					lr.neff := 1;
+					lr.neff := 0;
 					i :=1;
 					writeln('> File rekening');
 					writeln('> load');
@@ -203,7 +204,7 @@ begin
 					write(' nama file : ');
 					readln(namaFile);
 					assign(fs,namaFile);
-					ls.neff := 1;
+					ls.neff := 0;
 					reset(fs);
 					while (not eof(fs)) and (i>=401) do
 					begin
@@ -222,7 +223,7 @@ begin
 					write(' nama file : ');
 					readln(namaFile);
 					assign(ft,namaFile);
-					lt.neff := 1;
+					lt.neff := 0;
 					reset(ft);
 					while (not eof(ft)) and (i>=401) do
 					begin
@@ -241,7 +242,7 @@ begin
 					write(' nama file : ');
 					readln(namaFile);
 					assign(fbyr,namaFile);
-					lbyr.neff := 1;
+					lbyr.neff := 0;
 					reset(fbyr);
 					while (not eof(fbyr)) and (i>=401) do
 					begin
@@ -260,7 +261,7 @@ begin
 					write(' nama file : ');
 					readln(namaFile);
 					assign(fbeli,namaFile);
-					lbeli.neff := 1;
+					lbeli.neff := 0;
 					reset(fbeli);
 					while (not eof(fbeli)) and (i>=401) do
 					begin
@@ -279,7 +280,7 @@ begin
 					write(' nama file : ');
 					readln(namaFile);
 					assign(fnt,namaFile);
-					lnt.neff := 1;
+					lnt.neff := 0;
 					reset(fnt);
 					while (not eof(fnt)) and (i>=401) do
 					begin
