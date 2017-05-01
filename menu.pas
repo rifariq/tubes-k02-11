@@ -52,7 +52,7 @@ type
 		jenisrekening : string;
 		mataUang : string;
 		saldo : longint;
-		setoranRutin : string;
+		setoranRutin : longint;
 		rekeningAutodebet : string;
 		jangkaWaktu : string; 
 		tanggalMulai : string; 
@@ -411,7 +411,7 @@ begin
 	writeln('> Daftar Rekening :');
 	if (X.neff > 0) then
 	begin
-		for i:= 1 to Neff do
+		for i:= 1 to X.Neff do
 		begin
 			if (noNasabah = X.rekening[i].nomorNasabah) then
 			begin
@@ -706,6 +706,255 @@ begin
 		writeln('> perintah tidak bisa dilakukan karena nomor rekening tidak ada');
 	end;
 end;
+
+procedure buatRekening(NoNasabah : string; var R : ListRekening);
+
+{Kamus lokal}
+var	
+	chs,n,jw		: integer;
+	saldo,setoran	: longint;
+	rekAuto			: string;
+	i				: integer;
+{Algoritma Prosedur}
+begin
+writeln('> Buat Rekening');
+repeat 
+	writeln('> Pilih jenis rekening yang akan dibuat :');
+	writeln('> 1. Tabungan Mandiri');
+	writeln('> 2. Tabungan Rencana');
+	writeln('> 3. Deposito');
+	write('> Jenis rekening: ');
+	readln(chs);
+	writeln('>');
+until (chs>0)and(chs<4);
+case chs of
+	1 : begin
+		repeat
+			writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal Rp 50.000');
+			write('> Masukkan setoran awal : Rp ');
+			readln(saldo);
+		until (saldo>=50000);	
+		n := R.Neff+1;
+		R.rekening[n].nomorAkun := '1XY0'+IntToStr(n);
+		R.rekening[n].nomorNasabah := NoNasabah;
+		R.rekening[n].jenisrekening := 'tabungan mandiri';
+		R.rekening[n].mataUang := 'IDR';
+		R.rekening[n].saldo := saldo;
+		R.rekening[n].setoranrutin := 0;
+		R.rekening[n].rekeningAutodebet := '-';
+		R.rekening[n].jangkaWaktu := '-';
+		R.rekening[n].tanggalMulai := DateToStr(Date);
+		end;	
+	2 : begin
+		n := R.Neff+1;
+		write('> Masukkan setoran awal : Rp ');
+		readln(saldo);
+		if (saldo<0) then 
+		begin
+			repeat
+				writeln('> Masukkan angka  >= 0');
+				write('> Masukkan setoran awal : Rp ');
+				readln(saldo);
+			until (saldo>=0);
+		end;
+		writeln('> Silahkan tentukan setoran bulanan yang Anda inginkan');
+		repeat
+			writeln('> Minimal Rp 500.000');
+			write('> Masukkan jumlah setoran bulanan : Rp ');
+			readln(setoran);
+		until (setoran>=500000);
+		i := 1;
+		rekAuto := '-';
+		while (i<n) and (rekAuto = '-') do
+		begin
+			if (R.rekening[i].nomorNasabah=R.rekening[n].nomorNasabah) and (R.rekening[i].jenisrekening = 'tabungan mandiri') then
+			begin
+				rekAuto := R.rekening[i].nomorAkun
+			end;
+			i:=i+1;
+		end;
+	
+		writeln('> Silahkan tentukan jangka waktu tabungan yang Anda inginkan');
+		repeat
+			writeln('> Minimal 1 tahun');
+			writeln('> Maksimal 20 tahun');
+			write('> Jangka waktu tabungan dalam tahun: ');
+			readln(jw);
+		until (jw>=1)and(jw<=20);
+				
+		R.rekening[n].nomorAkun := '2XY0'+IntToStr(n);
+		R.rekening[n].nomorNasabah := NoNasabah;
+		R.rekening[n].jenisrekening := 'tabungan rencana';
+		R.rekening[n].mataUang := 'IDR';
+		R.rekening[n].saldo := saldo;
+		R.rekening[n].setoranrutin := setoran;
+		R.rekening[n].rekeningAutodebet := rekAuto;
+		R.rekening[n].jangkaWaktu := IntToStr(jw)+' tahun';
+		R.rekening[n].tanggalMulai := DateToStr(Date);
+		end;
+	3 : begin
+		n :=R.Neff+1;
+		writeln('> Kami menyediakan tiga jenis mata uang yang dapat anda gunakan :');
+		writeln('> 1. IDR');
+		writeln('> 2. USD');
+		writeln('> 3. EUR');
+		write('> Pilih mata uang yang ingin anda gunakan : ');
+		readln(chs);
+		while (chs<1)or(chs>3) do 
+		begin
+			writeln('> Masukkan angka 1-3');
+			write('> Pilih mata uang yang ingin anda gunakan : ');
+			readln(chs);
+		end;
+		case chs of
+		1 : begin
+			R.rekening[n].mataUang := 'IDR';
+			repeat
+				writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal Rp 8.000.000');
+				write('> Masukkan setoran awal : Rp ');
+				readln(saldo);
+			until (saldo>=8000000);
+			end;
+		2 : begin
+			R.rekening[n].mataUang := 'USD';
+			repeat
+				writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal USD 600');
+				write('> Masukkan setoran awal : USD ');
+				readln(saldo);
+			until (saldo>=600);	
+			end;	
+		3 : begin
+			R.rekening[n].mataUang := 'EUR';
+			repeat
+				writeln('> Untuk membat rekening ini, Anda harum memberikan setoran awal minimal EUR 550');
+				write('> Masukkan setoran awal : EUR ');
+				readln(saldo);
+			until (saldo>=550);	
+			end;
+		end;	
+		i := 1;
+		rekAuto := '-';
+		while (i<n) and (rekAuto = '-') do
+		begin
+			if (R.rekening[i].nomorNasabah=R.rekening[n].nomorNasabah) and (R.rekening[i].jenisrekening = 'tabungan mandiri') then
+			begin
+				rekAuto := R.rekening[i].nomorAkun
+			end;
+			i:=i+1;
+		end;
+		
+		writeln('> Silahkan pilih jangka waktu tabungan yang Anda inginkan');
+		writeln('> 1. 1 bulan');
+		writeln('> 2. 3 bulan');
+		writeln('> 3. 6 bulan');
+		writeln('> 4. 12 bulan');
+		write('> Pilihan : ');
+		readln(chs);
+		while (chs<1)or(chs>4) do 
+		begin
+			writeln('> Masukkan angka 1-4');
+			write('> Pilihan : ');
+			readln(chs);
+		end;
+		case chs of
+		1 : begin
+			jw := 1;
+			end;
+		2 : begin
+			jw := 3;
+			end;
+		3 : begin
+			jw := 6;
+			end;
+		4 : begin
+			jw := 12;
+			end;
+		end;				
+		R.rekening[n].nomorAkun := '3XY0'+IntToStr(n);
+		R.rekening[n].nomorNasabah := NoNasabah;
+		R.rekening[n].jenisrekening := 'deposito';
+		R.rekening[n].saldo := saldo;
+		R.rekening[n].setoranrutin := 0;
+		R.rekening[n].rekeningAutodebet := rekAuto;
+		R.rekening[n].jangkaWaktu := IntToStr(jw)+' bulan';
+		R.rekening[n].tanggalMulai := DateToStr(Date);
+		end;
+	end;
+end;
+
+procedure tutupRekening(NoNasabah : string; var R: ListRekening);
+
+{Kamus Lokal}
+var
+	delAkun 	: string;
+	akunTrans	: string;
+	i 			: integer;
+	idel,itrans	: integer;
+	found		: boolean;
+{Algoritma prosedur}
+begin
+	lihatRekening(R);
+	found := False;
+	repeat
+		write('> Masukkan Nomor Akun yang akan dihapus : ');
+		readln(delAkun);
+		i := 1;
+		while (i<=R.Neff) and (found=False) do
+		begin	
+			if ((delAkun)=(R.rekening[i].nomorAkun)) then
+			begin
+				found := True;
+				idel  := i;
+			end;
+			i := i+1;
+		end;
+		if (found=False) then writeln('> Nomor Akun tidak ditemukan');
+	until (found=True);
+	
+	found := False;
+	repeat
+		write('> Masukkan rekening tujuan untuk pemindahan saldo : ');
+		readln(akunTrans);
+		i := 1;
+		while (i<=R.Neff) and (found=False) do
+		begin	
+			if ((delAkun)=(R.rekening[i].nomorAkun)) then
+				begin
+				found 	:= True;
+				itrans  := i;
+				end;
+			i := i+1;
+		end;
+		if (found=False) then writeln('> Nomor Akun tidak ditemukan');	
+	until (found=True);
+	
+	if ((R.rekening[itrans].jenisrekening)='tabungan mandiri') then
+	begin
+		R.rekening[itrans].saldo := R.rekening[itrans].saldo+R.rekening[idel].saldo-25000;
+	end else if ((R.rekening[itrans].jenisrekening)='tabungan rencana') then
+	begin
+		if jatuhtempo(R.rekening[idel]) then
+		begin
+			R.rekening[itrans].saldo := R.rekening[itrans].saldo+R.rekening[idel].saldo-25000;
+		end else
+			R.rekening[itrans].saldo := R.rekening[itrans].saldo+R.rekening[idel].saldo-200000;
+	end else if ((R.rekening[itrans].jenisrekening)='deposito') then
+	begin
+		if jatuhtempo(R.rekening[idel]) then
+		begin
+			R.rekening[itrans].saldo := R.rekening[itrans].saldo+R.rekening[idel].saldo-25000;
+		end else
+			R.rekening[itrans].saldo := R.rekening[itrans].saldo+R.rekening[idel].saldo-round(Date-StrToDate(R.rekening[idel].tanggalMulai))*10000;
+	end;
+	i := 0;
+	while (i<(R.Neff-idel)) do
+	begin
+		R.rekening[idel+i]:=R.rekening[idel+i+1];
+		i := i+1;
+	end;
+	R.Neff := R.Neff-1;
+end;
+
 
 procedure exitProgram (ln : listNasabah; lr : listRekening; ls : listSetoran;lt : listTransfer;lbyr : listPembayaran;lbeli : listPembelian;lnt : listNilaiTukar);
 var
