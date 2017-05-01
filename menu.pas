@@ -299,7 +299,270 @@ begin
 	end;
 end;
 
+Procedure lihatRekening(X : listRekening);
+var
+	jumlahRek, i : integer;
+begin
+	jumlahRek:= 0;
+	writeln('> Daftar Rekening :');
+	if (X.neff > 0) then
+	begin
+		for i:= 1 to Neff do
+		begin
+			if (noNasabah = X.rekening[i].nomorNasabah) then
+			begin
+				jumlahRek:= jumlahRek+1;
+				writeln('> ', jumlahRek,'. ', X.rekening[i].jenisrekening,' | No.Akun : ', X.rekening[i].nomorAkun);
+			end;
+		end;
+	end else writeln('> Anda tidak memiliki rekening');
+end;
 
+Procedure pilihanRekening(n : integer; X : listRekening);
+var
+	i, j : integer;
+begin
+	j:= 0;
+	if (n = 1) then
+	begin
+		for i:= 1 to X.neff do
+		begin
+			if (X.rekening[i].jenisrekening = 'tabungan mandiri') then
+			begin
+				j:= j+1;
+				writeln('> ', j, '. ', X.rekening[i].nomorAkun);
+			end;
+		end;
+		if (j = 0) then
+		begin
+			writeln('> Anda tidak memiliki tabungan mandiri');
+		end;
+	end
+	else if (n = 2) then
+	begin
+		for i:= 1 to X.neff do
+		begin
+			if (X.rekening[i].jenisrekening = 'deposito') then
+			begin
+				j:= j+1;
+				writeln('> ', j, '. ', X.rekening[i].nomorAkun);
+			end;
+		end;
+		if (j = 0) then
+		begin
+			writeln('> Anda tidak memiliki deposito');
+		end;
+	end
+	else if (n = 3) then
+	begin
+		for i:= 1 to X.neff do
+		begin
+			if (X.rekening[i].jenisrekening = 'tabungan rencana') then
+			begin
+				j:= j+1;
+				writeln('> ', j, '. ', X.rekening[i].nomorAkun);
+			end;
+		end;
+		if (j = 0) then
+		begin
+			writeln('> Anda tidak memiliki tabungan mandiri');
+		end;
+	end;
+end;
+
+Procedure setor(var X : listRekening; Y : listSetoran);
+var
+	nominal : longint;
+	akun : string;
+	num, i, new, place : integer;
+	found : boolean;
+	
+begin
+	writeln ('> Pilih jenis rekening :');
+	writeln ('> 1. Deposito');
+	writeln ('> 2. Tabungan Rencana');
+	writeln ('> 3. Tabungan Mandiri');
+	write ('> Jenis rekening: '); 
+	readln (num);
+	pilihanRekening(num, X);
+	repeat
+		write('> Masukkan nomor Akun tujuan pensetoran : ');
+		readln(akun);
+		for i:= 1 to X.neff do
+			begin
+			if (akun = X.rekening[i].nomorAkun) then
+			begin
+				place:= i;
+				found:= true;
+			end;
+		end;
+		if (found = false) then writeln('> Nomor rekening tidak valid. Harap coba lagi.');
+	until (found = true);
+	write('> Masukkan jumlah uang yang ingin Anda setor : ');
+	readln(nominal);
+	while (nominal < 0) do
+	begin
+		writeln('> ERROR : Nominal tidak valid');
+		write('> Masukkan jumlah uang yang ingin Anda setor : ');
+		readln(nominal);
+	end;
+	X.rekening[place].saldo:= X.rekening[place].saldo + nominal;
+	Y.neff:= Y.neff+1;
+	new:= Y.neff;
+	Y.setoran[new].nomorAkun:= X.rekening[place].nomorAkun;
+	Y.setoran[new].jenisTransaksi:= 'setoran';
+	Y.setoran[new].mataUang:= X.rekening[place].mataUang;
+	Y.setoran[new].jumlah:= nominal;
+	Y.setoran[new].saldo:= X.rekening[place].saldo;
+	Y.setoran[new].tanggalTransaksi:= DateToStr(Date);
+	writeln('> Transaksi Berhasil');
+end;
+
+Function valiDate(tglKini : TDateTime; tglTransaksi : TDateTime; periode : integer) : boolean;
+var
+	x, y, selisih : integer;
+	valid : boolean;
+begin
+	x:= Round(tglKini);
+	y:= Round(tglTransaksi);
+	selisih:= x - y;
+	if (selisih <= periode) and (selisih >= 1) then
+	begin
+		valid:= true;
+		valiDate:= valid;
+	end else
+	begin
+		valid:= false;
+		valiDate:= valid;
+	end;
+end;
+
+Procedure lihatAktifitasTransaksi(X : listRekening; A : listSetoran; B : listTransfer; C : listPembayaran; D : listPembelian);
+{KAMUS LOKAL}
+var
+	value, i, periode, num, kosong : integer;
+	isValid : boolean;
+	found : boolean;
+	akun, unitOfDay : string;
+	tglTransaksi : TDateTime;
+	
+{ALGORITMA}
+begin
+	writeln ('> Pilih jenis rekening :');
+	writeln ('> 1. Deposito');
+	writeln ('> 2. Tabungan Rencana');
+	writeln ('> 3. Tabungan Mandiri');
+	write ('> Jenis rekening: '); 
+	readln (num);
+	pilihanRekening(num, X);
+	repeat
+		write('> Masukkan nomor Akun tujuan pensetoran : ');
+		readln(akun);
+		for i:= 1 to X.neff do
+			begin
+			if (akun = X.rekening[i].nomorAkun) then
+			begin
+				found:= true;
+			end;
+		end;
+		if (found = false) then writeln('> Nomor rekening tidak valid. Harap coba lagi.');
+	until (found = true);
+	isValid:= true;
+	writeln('> Jangka waktu data yang dapat ditampilkan adalah 1 hari sampai 3 bulan.');
+	repeat
+		writeln('> Jangka waktu transaksi yang ingin ditampilkan : ');
+		write('> '); readln(value,unitOfDay);
+		if (unitOfDay = ' bulan') and (value <= 3) and (value >= 0) then
+		begin
+			periode:= value*30;
+		end
+		else if (unitOfDay = ' hari') and (value >= 0) then
+		begin
+			periode:= value;
+		end else
+		begin
+			isValid:= false;
+		end;
+		if (isvalid = false) then
+		begin
+			writeln('> ERROR : Jangka waktu tidak valid.');
+		end;
+	until (isValid = true);
+	kosong:= 0;
+	if (A.neff > 0) then
+	begin
+		writeln('> Transaksi setoran/penyetoran ; ');
+		for i:= 1 to A.neff do
+		begin
+			tglTransaksi:= StrToDate(A.setoran[i].tanggalTransaksi);
+			if (valiDate(Date, tglTransaksi, periode) = true) and (akun = A.setoran[i].nomorAkun) then
+			begin
+				writeln('> Jenis transaksi : ', A.setoran[i].jenisTransaksi);
+				writeln('> Mata uang : ', A.setoran[i].mataUang);
+				writeln('> Jumlah ',  A.setoran[i].jenisTransaksi, ' : ', A.setoran[i].jumlah);
+				writeln('> Saldo akhir : ', A.setoran[i].saldo);
+				writeln('> Tanggal transaksi : ', A.setoran[i].tanggalTransaksi);
+				writeln;
+			end;
+		end;
+	end else kosong:= kosong + 1;
+	if (B.neff > 0) then
+	begin
+		writeln('> Transaksi transfer : ');
+		for i:= 1 to B.neff do
+		begin
+			tglTransaksi:= StrToDate(B.transfer[i].tanggalTransaksi);
+			if (valiDate(Date, tglTransaksi, periode) = true) and (akun = B.transfer[i].nomorAkunAsal) then
+			begin
+				writeln('> Akun tujuan : ', B.transfer[i].nomorAkuntujuan);
+				writeln('> Jenis transfer : ', B.transfer[i].jenisTransfer);
+				writeln('> Bank tujuan : ', B.transfer[i].namaBankLuar);
+				writeln('> Mata uang : ', B.transfer[i].mataUang);
+				writeln('> Jumlah : ', B.transfer[i].jumlah);
+				writeln('> Saldo akhir : ', B.transfer[i].saldo);
+				writeln('> Tanggal transaksi : ', B.transfer[i].tanggalTransaksi);
+				writeln;
+			end;
+		end;
+	end else kosong:= kosong + 1;
+	if (C.neff > 0) then
+	begin
+		writeln('> Transaksi pembayaran :');
+		for i:= 1 to C.neff do
+		begin
+			tglTransaksi:= StrToDate(C.pembayaran[i].tanggalTransaksi);
+			if (valiDate(Date, tglTransaksi, periode) = true) and (akun = C.pembayaran[i].nomorAkun) then
+			begin
+				writeln('> Jenis Transaksi : ', C.pembayaran[i].jenisTransaksi);
+				writeln('> Rekening bayar : ', C.pembayaran[i].rekeningBayar);
+				writeln('> Mata uang : ', C.pembayaran[i].mataUang);
+				writeln('> Jumlah : ', C.pembayaran[i].jumlah);
+				writeln('> Saldo Akhir : ', C.pembayaran[i].saldo);
+				writeln('> Tanggal transaksi : ', C.pembayaran[i].tanggalTransaksi);
+				writeln;
+			end;
+		end;
+	end else kosong:= kosong + 1;
+	if (D.neff > 0) then
+	begin
+		writeln('> Transaksi pembelian :');
+		for i:= 1 to A.neff do
+		begin
+			tglTransaksi:= StrToDate(D.pembelian[i].tanggalTransaksi);
+			if (valiDate(Date, tglTransaksi, periode) = true) and (akun = D.pembelian[i].nomorAkun) then
+			begin
+				writeln('> Jenis Barang : ', D.pembelian[i].jenisBarang);
+				writeln('> Penyedia : ', D.pembelian[i].penyedia);
+				writeln('> Nomor Tujuan : ', D.pembelian[i].nomorTujuan);
+				writeln('> Mata uang : ', D.pembelian[i].mataUang);
+				writeln('> Jumlah : ', D.pembelian[i].jumlah);
+				writeln('> Saldo Akhir : ', D.pembelian[i].saldo);
+				writeln('> Tanggal transaksi : ', D.pembelian[i].tanggalTransaksi);
+			end;
+		end;
+	end else kosong:= kosong + 1;
+	if (kosong = 4) then writeln('> Tidak ada transaksi dalam jangka waktu ', value, unitOfDay, ' terakhir');
+end;
 
 procedure penambahanAutoDebet(noNasabah : string; var  lr : listRekening);
 var
